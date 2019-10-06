@@ -9,6 +9,7 @@ public class Player : MonoBehaviour
     [SerializeField] float runSpeed = 5f;
     [SerializeField] float jumpSpeed = 5f;
     [SerializeField] float climbSpeed = 5f;
+    [SerializeField] Vector2 deathKick = new Vector2(50f, 50f);
 
     //State
     bool isAlive=true;
@@ -33,6 +34,8 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!isAlive) { return; }
+
         Run();
         Jump();
         FlipSprite();
@@ -83,4 +86,20 @@ public class Player : MonoBehaviour
             transform.localScale = new Vector2(Mathf.Sign(myRigidbody2D.velocity.x),1f);
         }
     }
+
+    private void Die()
+    {
+        isAlive = false;
+        myAnimator.SetTrigger("Dying");
+        GetComponent<Rigidbody2D>().velocity = deathKick;
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if(collision.gameObject.GetComponent<Enemy>())
+        {
+            Die();
+        }
+    }
+
 }
