@@ -40,6 +40,7 @@ public class Player : MonoBehaviour
         Jump();
         FlipSprite();
         ClimbLadder();
+        Die();
     }
 
     private void Run()
@@ -89,16 +90,11 @@ public class Player : MonoBehaviour
 
     private void Die()
     {
-        isAlive = false;
-        myAnimator.SetTrigger("Dying");
-        GetComponent<Rigidbody2D>().velocity = deathKick;
-    }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if(collision.gameObject.GetComponent<Enemy>())
+        if (myBodyCollider2D.IsTouchingLayers(LayerMask.GetMask("Enemy", "Hazards")))
         {
-            Die();
+            isAlive = false;
+            myAnimator.SetTrigger("Dying");
+            GetComponent<Rigidbody2D>().velocity = deathKick;
         }
     }
 
